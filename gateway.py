@@ -28,11 +28,6 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# misc
-config = {}
-path2handlerClass = {}
-name2forwarderClass = {}
-
 
 # Define the BrewCreator HTTP request handler
 class GatewayHttpRequestHandler(BaseHTTPRequestHandler):
@@ -87,7 +82,7 @@ def read_yaml(file_yaml) -> dict:
             sys.exit(1)
 
 
-T = TypeVar('T') # generic type for base class
+T = TypeVar('T')  # generic type for base class
 
 
 def find_class(package_name: str, base_class: Type[T], class_name: str, recursive: bool = True) -> Type[T]:
