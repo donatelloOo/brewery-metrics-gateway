@@ -1,0 +1,14 @@
+[Unit]
+Description=Brewery Metrics Gateway
+After=network.target
+
+[Service]
+Type=simple
+User=myuser
+WorkingDirectory=/home/myuser/dev/brewery-metrics-gateway
+ExecStart=/home/myuser/brewery-metrics-gateway/start.sh
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
