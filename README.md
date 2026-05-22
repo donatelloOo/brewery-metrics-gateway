@@ -1,8 +1,6 @@
 # Brewery Metrics Gateway
 
-Let's capture your Brewery Data and forward it to different platforms that might not be compatible by default !
-
-If you need to propagate the data to multiple platforms at a time, this is also possible.
+Let's capture your Brewery Metrics from your connected devices and forward them to multiple supported platforms.
 
 ## Overview
 
@@ -12,8 +10,8 @@ Since the metrics data format is not standardized, the tool will manage the data
 
 Design is decoupled in 2 concepts:
 
-- The gateway **handlers** that receive periodic requests from your connected devices
-- The gateway **forwarders** that convert and send your the metrics to target tracking systems 
+- The gateway **handlers** that receives periodic requests from your connected devices
+- The gateway **forwarders** that converts and send your metrics to target tracking systems 
 
 Currently, it supports the following:
 
@@ -82,31 +80,14 @@ forwarders:
     serverUrl: http://www.littlebock.fr/api/log/ispindle/<ID1>/<ID2> 
 ```
 
+> You can pretty easily add handlers/forwarders or comment-out the one you don't need
 
 
 ## Run as a service
 
 > **Note**: This only supports **Linux** (systemd) services, otherwise, please check the "Run as a standalone process" section.
 
-Configure the `brewery-metrics-gateway.service` file:
-
-```ini
-[Unit]
-Description=Brewery Metrics Gateway
-After=network.target
-
-[Service]
-Type=simple
-User=<MY_USER>
-WorkingDirectory=/home/<MY_USER>/brewery-metrics-gateway
-ExecStart=/home/<MY_USER>/brewery-metrics-gateway/start.sh
-Restart=always
-RestartSec=5
-
-[Install]
-WantedBy=multi-user.target
-```
-
+Configure the `service/brewery-metrics-gateway.service` template file if needed (user and paths are automatically injected).
 Install the service to the system using:
 
 ```shell
@@ -122,7 +103,6 @@ systemctl start brewery-metrics-gateway
 ```
 
 > The service should now be started and will restart the process in case of failure or system reboot.
-
 
 
 ## Run as a standalone process
