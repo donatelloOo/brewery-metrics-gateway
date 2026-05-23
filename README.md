@@ -10,8 +10,8 @@ Since the metrics data format is not standardized, the tool will manage the data
 
 Design is decoupled in 2 concepts:
 
-- The gateway **handlers** that receives periodic requests from your connected devices
-- The gateway **forwarders** that converts and send your metrics to target tracking systems 
+- The gateway **handlers** that receive periodic requests from your connected devices
+- The gateway **forwarders** that convert and send your metrics to target tracking systems 
 
 Currently, it supports the following:
 
@@ -25,7 +25,12 @@ Currently, it supports the following:
 
 
 
-> **Note**: there are ways of improvement to manage and route specific devices data to specific forwarders... suggestions and inputs (data format and test endpoints) are welcome !
+> **Note**: there are ways of improvement to:
+>
+> - manage and route specific devices data to specific forwarders...
+> - support scheduled pulls from a Prometheus server
+>
+> ==> suggestions and inputs (data format and test endpoints) are welcome !
 
 > **Warning**: as supported connected devices or tracking systems does not support authentication, there is no security layer implemented.
 
@@ -127,4 +132,11 @@ Once the gateway is running, you can go to your connected device, and fill the g
 Go to Devices, select your device, and go to "Device" tab, then open "Integration" dropdown list and fill the cloud URL with something like:
  `http://<gateway.host>:<gateway.port>/<handlers.brewCreator.path>/<optionalDeviceName>` 
 
-Save, and wait for next quarter to start receiving data (you should see the requests popping in the `app.log` file)
+Save, and wait for next quarter (sometimes more) to start receiving data.
+You should see the requests activity popping in the `app.log` file
+
+
+
+## Credits
+
+Credits to https://github.com/PaulLesur/transfer-hose that initiated a project to pull and forward metrics from a Prometheus server to Littlebock.
