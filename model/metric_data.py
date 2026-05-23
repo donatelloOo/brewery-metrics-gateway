@@ -20,3 +20,6 @@ class MetricData:
 
     # The battery percentage
     battery: float  # | None
+
+    # The name of the device producing this metric
+    device_name: str  # | None

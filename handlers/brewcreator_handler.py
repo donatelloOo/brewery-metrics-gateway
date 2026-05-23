@@ -35,4 +35,6 @@ class BrewCreatorHandler(Handler):
             gravity=data.get('gravity'),
             temperature=data.get('temp'),
             temperature_unit=TemperatureUnit.CELSIUS if data.get('temp_unit') == 'C'
-            else TemperatureUnit.FAHRENHEIT)
+            else TemperatureUnit.FAHRENHEIT,
+            battery=None,
+            device_name=data.get('name'))

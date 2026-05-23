@@ -1,8 +1,7 @@
 import requests
 import logging
 from model.forwarder import Forwarder
-from model.metric_data import MetricData, TemperatureUnit
-
+from model.metric_data import MetricData
 
 # Logging configuration
 logging.basicConfig(
@@ -11,10 +10,11 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S',
     handlers=[
         logging.FileHandler('app.log'),  # log to file
-        logging.StreamHandler()          # log to console
+        logging.StreamHandler()  # log to console
     ]
 )
 logger = logging.getLogger(__name__)
+
 
 # Define the BrewCreator handler
 class LittlebockForwarder(Forwarder):

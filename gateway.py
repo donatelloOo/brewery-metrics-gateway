@@ -18,7 +18,7 @@ default_port = 8080
 
 # Logging configuration
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.DEBUG,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     datefmt='%Y-%m-%d %H:%M:%S',
     handlers=[
@@ -44,30 +44,35 @@ class GatewayHttpRequestHandler(BaseHTTPRequestHandler):
         """
         Receives Handlers POST requests.
         """
-        # Read POST data
-        content_length = int(self.headers.get('Content-Length', 0))
-        post_data = self.rfile.read(content_length)
-        data = json.loads(post_data.decode('utf-8'))
+        try:
+            # Read POST data
+            content_length = int(self.headers.get('Content-Length', 0))
+            post_data = self.rfile.read(content_length)
+            data = json.loads(post_data.decode('utf-8'))
 
-        # Log POST request (including data)
-        logger.debug(
-            f"POST request received: Path={self.path}, "
-            f"Headers={dict(self.headers)}, "
-            f"Data={data if data else 'None'}"
-        )
+            # Log POST request (including data)
+            logger.debug(
+                f"POST request received: Path={self.path}, "
+                f"Headers={dict(self.headers)}, "
+                f"Data={data if data else 'None'}"
+            )
 
-        # Transform device metric to standard metric according to requested handler
-        base_path = f"/{self.path.split('/')[1]}"
-        handler_class: type[Handler] = path2handlerClass.get(base_path)
-        metric_data = handler_class.transform(config, data)
+            # Transform device metric to standard metric according to requested handler
+            base_path = f"/{self.path.split('/')[1]}"
+            handler_class: type[Handler] = path2handlerClass.get(base_path)
+            metric_data = handler_class.transform(config, data)
 
-        # Forward metric to external systems
-        for fw_name, fw_class in name2forwarderClass.items():
-            fw_class.send(config['forwarders'][fw_name], metric_data)
+            # Forward metric to external systems
+            for fw_name, fw_class in name2forwarderClass.items():
+                fw_class.send(config['forwarders'][fw_name], metric_data)
 
-        self.send_response(200)
-        self.send_header("Content-type", "text/html")
-        self.end_headers()
+            self.send_response(200)
+            self.send_header("Content-type", "text/html")
+            self.end_headers()
+        except Exception as e:
+            logger.error(f"Processing failed: {e}")
+            self.send_response(500)
+
 
 
 def read_yaml(file_yaml) -> dict:

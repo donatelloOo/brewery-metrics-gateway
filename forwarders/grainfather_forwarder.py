@@ -3,7 +3,6 @@ import logging
 from model.forwarder import Forwarder
 from model.metric_data import MetricData, TemperatureUnit
 
-
 # Logging configuration
 logging.basicConfig(
     level=logging.INFO,
@@ -11,10 +10,11 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S',
     handlers=[
         logging.FileHandler('app.log'),  # log to file
-        logging.StreamHandler()          # log to console
+        logging.StreamHandler()  # log to console
     ]
 )
 logger = logging.getLogger(__name__)
+
 
 # Define the BrewCreator handler
 class GrainfatherForwarder(Forwarder):
@@ -40,13 +40,13 @@ class GrainfatherForwarder(Forwarder):
         logger.debug("Sending data to Grainfather : %s , %s", url, data_to_send)
         response = requests.post(url, data_to_send, timeout=10)
 
-        if response.status_code in (200,201):
+        if response.status_code in (200, 201):
             logger.info(f"Grainfather - Update Success: {response.text}")
             return True
         elif response.status_code == 422:
             logger.error(f"Grainfather - Invalid request: {response.text}")
         elif response.status_code == 429:
-            logger.warning(f"Grainfather - Too Many Requests (ignored due to update interval < 15mn)")
+            logger.warning("Grainfather - Too Many Requests (ignored due to update interval < 15mn)")
         else:
             logger.warning(f"Grainfather - Unmanaged response ({response.status_code}): {response.text}")
         return False
