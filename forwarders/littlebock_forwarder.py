@@ -32,12 +32,13 @@ class LittlebockForwarder(Forwarder):
         logger.debug("Sending data: %s , %s", config.server_url, data)
         response = requests.post(config.server_url, data, timeout=10)
 
-        if response.status_code in (200, 201):
-            logger.info(f"Update Success")
-            return True
-        elif "not attached" in response.json()['message']:
-            logger.warning("This device is not attached to a brew session")
-            logger.debug(f"{response.status_code}: {response.json()}")
+        if response.status_code == 200:
+            if response.json().get('success'):
+                logger.info(f"Update Success")
+                return True
+            else:
+                logger.warning(response.json().get('message'))
+                logger.debug(f"{response.status_code}: {response.json()}")
         else:
             logger.warning(f"Unmanaged response ({response.status_code}): {response.text}")
         return False
