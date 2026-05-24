@@ -1,4 +1,4 @@
-from typing import Dict, Type, Any
+from typing import Dict, Type
 from pydantic import BaseModel, field_validator
 
 
@@ -36,7 +36,7 @@ class Config(BaseModel):
     forwarders: Dict[str, ForwarderConfig] = {}
 
     @field_validator("handlers", mode="before")
-    def set_handler_defaults(cls, handlers: Dict[str, HandlerConfig] | None) -> dict:
+    def set_handler_defaults(cls, handlers: Dict[str, HandlerConfig]) -> dict:
         if not handlers:
             return {}
 
@@ -52,7 +52,7 @@ class Config(BaseModel):
         return handlers
 
     @field_validator("forwarders", mode="before")
-    def set_forwarder_defaults(cls, forwarders: Dict[str, ForwarderConfig] | None) -> dict:
+    def set_forwarder_defaults(cls, forwarders: Dict[str, ForwarderConfig]) -> dict:
         if not forwarders:
             return {}
 

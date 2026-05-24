@@ -30,13 +30,15 @@ Currently, it supports the following:
 > - manage and route specific devices data to specific forwarders...
 > - support scheduled pulls from a Prometheus server
 >
-> ==> suggestions and inputs (data format and test endpoints) are welcome !
+> ==> suggestions and inputs (data format and test endpoints) are welcome (see Issue Tracker section).
 
 > **Warning**: as supported connected devices or tracking systems does not support authentication, there is no security layer implemented.
 
 
 
 ## Prerequisites
+
+This tool requires **Python 3.9+** to ensure maximum backward compatibility, however most recent versions are not automatically tested yet.
 
 Create the python virtual environment using:
 
@@ -57,7 +59,7 @@ gateway:
   ## The IP to listen to (defaults to 0.0.0.0 to listen on all interfaces).
   #host: "0.0.0.0"
   ## The port to listen to.
-  port: "8080"
+  port: 8080
 
 ## The gateway handlers configuration to receive data from the gateway.
 ## Just comment out the handlers to disable
@@ -79,12 +81,12 @@ forwarders:
 
   ## The Grainfather server to forward data.
   grainfather:
-    serverUrl: https://community.grainfather.com/iot/<ID>/custom
+    server_url: https://community.grainfather.com/iot/<ID>/custom
     #class_name: GrainfatherForwarder
 
   ## The Littlebock server to forward data.
   littlebock:
-    serverUrl: http://www.littlebock.fr/api/log/ispindle/<ID1>/<ID2> 
+    server_url: http://www.littlebock.fr/api/log/ispindle/<ID1>/<ID2>
     #class_name: LittlebockForwarder
 ```
 
