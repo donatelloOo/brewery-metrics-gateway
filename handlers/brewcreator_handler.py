@@ -1,17 +1,10 @@
 import logging
-from model.handler import Handler
-from model.metric_data import MetricData, TemperatureUnit
 
-# Logging configuration
-logging.basicConfig(
-    level=logging.DEBUG,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S',
-    handlers=[
-        logging.FileHandler('app.log'),  # log to file
-        logging.StreamHandler()  # log to console
-    ]
-)
+from model.config import Config
+from model.handler import Handler
+from model.metric import MetricData, TemperatureUnit
+
+# Logger
 logger = logging.getLogger(__name__)
 
 
@@ -19,7 +12,7 @@ logger = logging.getLogger(__name__)
 class BrewCreatorHandler(Handler):
 
     @staticmethod
-    def transform(config: dict, data: dict) -> MetricData:
+    def transform(config: Config.HandlerConfig, data: dict) -> MetricData:
         """
         Receives BrewCreator POST requests.
         

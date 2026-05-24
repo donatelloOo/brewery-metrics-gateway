@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 
-from model.metric_data import MetricData
+from model.config import Config
+from model.metric import MetricData
 
 
 ## Abstract definition of a handler
@@ -8,5 +9,5 @@ class Handler(ABC):
 
     @staticmethod
     @abstractmethod
-    def transform(config: dict, data: dict) -> MetricData:
+    def transform(config: Config.HandlerConfig, data: dict) -> MetricData:
         pass

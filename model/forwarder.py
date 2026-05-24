@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 
-from model.metric_data import MetricData
+from model.config import Config
+from model.metric import MetricData
 
 
 ## Abstract definition of a forwarder
@@ -8,5 +9,5 @@ class Forwarder(ABC):
 
     @staticmethod
     @abstractmethod
-    def send(config: dict, metric_data: MetricData) -> bool:
+    def send(config: Config.ForwarderConfig, metric_data: MetricData) -> bool:
         pass

@@ -1,10 +1,8 @@
-name: Ferminator
-
 ## The gateway server configuration
 gateway:
 
   ## The IP to listen to (defaults to 0.0.0.0 to listen on all interfaces).
-  host: "0.0.0.0"
+  #host: "0.0.0.0"
   ## The port to listen to.
   port: 8080
 
@@ -18,7 +16,7 @@ handlers:
   brewCreator:
     ## The path to receive requests from BrewCreator
     path: /brewCreator
-    class: BrewCreatorHandler
+    #class_name: BrewCreatorHandler
 
 ## The gateway forwarders configuration to send metrics to external fermentation tracking systems among:
 ## - grainfather
@@ -28,10 +26,10 @@ forwarders:
 
   ## The Grainfather server to forward data.
   grainfather:
-    serverUrl: https://community.grainfather.com/iot/<ID>/custom
-    class: GrainfatherForwarder
+    server_url: https://community.grainfather.com/iot/<ID>/custom
+    #class_name: GrainfatherForwarder
 
   ## The Littlebock server to forward data.
   littlebock:
-    serverUrl: http://www.littlebock.fr/api/log/ispindle/<ID1>/<ID2>
-    class: LittlebockForwarder
+    server_url: http://www.littlebock.fr/api/log/ispindle/<ID1>/<ID2>
+    #class_name: LittlebockForwarder

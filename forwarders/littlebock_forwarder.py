@@ -1,7 +1,9 @@
 import requests
 import logging
+
+from model.config import Config
 from model.forwarder import Forwarder
-from model.metric_data import MetricData
+from model.metric import MetricData
 
 # Logger
 logger = logging.getLogger(__name__)
@@ -11,30 +13,31 @@ logger = logging.getLogger(__name__)
 class LittlebockForwarder(Forwarder):
 
     @staticmethod
-    def send(config: dict, metric_data: MetricData) -> bool:
+    def send(config: Config.ForwarderConfig, metric: MetricData) -> bool:
         """
         Send data to Littlebock endpoint.
 
         Expected format is:
         {
-            "gravity": 1.034, // This must be a numeric value
+            "gravity": 1.034, // This must be numeric
             "temperature": 18, // This must be numeric
-            "battery": "98" // This must be numeric
+            "battery": 98 // This must be numeric
         }
         """
-        url = config['serverUrl']
-        data_to_send = {
-            'gravity': metric_data.gravity,
-            'temperature': metric_data.temperature,
-            'battery': metric_data.battery,
+        data = {
+            'gravity': metric.gravity,
+            'temperature': metric.temperature,
+            'battery': metric.battery,
         }
-        logger.debug("Sending data to Littlebock : %s , %s", url, data_to_send)
-        response = requests.post(url, data_to_send, timeout=10)
+        logger.debug("Sending data: %s , %s", config.server_url, data)
+        response = requests.post(config.server_url, data, timeout=10)
 
-        if "not attached" in response.json()['message']:
-            logger.warning("Littlebock - This device is not attached to a brew session")
-            logger.debug(f"Littlebock - {response.json()}")
-        else:
-            logger.info("Littlebock - Update Success")
+        if response.status_code in (200, 201):
+            logger.info(f"Update Success")
             return True
+        elif "not attached" in response.json()['message']:
+            logger.warning("This device is not attached to a brew session")
+            logger.debug(f"{response.status_code}: {response.json()}")
+        else:
+            logger.warning(f"Unmanaged response ({response.status_code}): {response.text}")
         return False

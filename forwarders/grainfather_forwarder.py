@@ -1,7 +1,9 @@
 import requests
 import logging
+
+from model.config import Config
 from model.forwarder import Forwarder
-from model.metric_data import MetricData, TemperatureUnit
+from model.metric import MetricData, TemperatureUnit
 
 # Logger
 logger = logging.getLogger(__name__)
@@ -11,7 +13,7 @@ logger = logging.getLogger(__name__)
 class GrainfatherForwarder(Forwarder):
 
     @staticmethod
-    def send(config: dict, metric_data: MetricData) -> bool:
+    def send(config: Config.ForwarderConfig, metric: MetricData) -> bool:
         """
         Send metric data to Grainfather endpoint.
 
@@ -22,22 +24,21 @@ class GrainfatherForwarder(Forwarder):
             "unit": "celsius" || "fahrenheit" // Supply the unit that matches the temperature you are sending
         }
         """
-        url = config['serverUrl']
-        data_to_send = {
-            'specific_gravity': metric_data.gravity,
-            'temperature': metric_data.temperature,
-            'unit': 'celsius' if metric_data.temperature_unit == TemperatureUnit.CELSIUS else 'fahrenheit'
+        data = {
+            'specific_gravity': metric.gravity,
+            'temperature': metric.temperature,
+            'unit': 'celsius' if metric.temperature_unit == TemperatureUnit.CELSIUS else 'fahrenheit'
         }
-        logger.debug("Sending data to Grainfather : %s , %s", url, data_to_send)
-        response = requests.post(url, data_to_send, timeout=10)
+        logger.debug("Sending data: %s , %s", config.server_url, data)
+        response = requests.post(config.server_url, data, timeout=10)
 
         if response.status_code in (200, 201):
-            logger.info(f"Grainfather - Update Success: {response.text}")
+            logger.info(f"Update Success")
             return True
         elif response.status_code == 422:
-            logger.error(f"Grainfather - Invalid request: {response.text}")
+            logger.error(f"Invalid request: {response.text}")
         elif response.status_code == 429:
-            logger.warning("Grainfather - Too Many Requests (ignored due to update interval < 15mn)")
+            logger.warning("Too Many Requests (ignored due to update interval < 15mn)")
         else:
-            logger.warning(f"Grainfather - Unmanaged response ({response.status_code}): {response.text}")
+            logger.warning(f"Unmanaged response ({response.status_code}): {response.text}")
         return False

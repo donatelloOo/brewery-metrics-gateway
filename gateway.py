@@ -9,12 +9,19 @@ import importlib
 import pkgutil
 from typing import Type, TypeVar
 
+from pydantic import ValidationError
+
 from model.handler import Handler
 from model.forwarder import Forwarder
+from model.config import Config
 
 # Set the default host name and port number
 default_host = "0.0.0.0"
 default_port = 8080
+config: Config = None
+path2handlerConf = {}
+path2handlerClass = {}
+name2forwarderClass = {}
 
 # Logging configuration
 logging.basicConfig(
@@ -59,12 +66,14 @@ class GatewayHttpRequestHandler(BaseHTTPRequestHandler):
 
             # Transform device metric to standard metric according to requested handler
             base_path = f"/{self.path.split('/')[1]}"
+            handler_conf = path2handlerConf.get(base_path)
             handler_class: type[Handler] = path2handlerClass.get(base_path)
-            metric_data = handler_class.transform(config, data)
+            metric_data = handler_class.transform(handler_conf, data)
 
-            # Forward metric to external systems
+            # Forward metric to external tracking systems
             for fw_name, fw_class in name2forwarderClass.items():
-                fw_class.send(config['forwarders'][fw_name], metric_data)
+                # TODO implement per device routing logic
+                fw_class.send(config.forwarders[fw_name], metric_data)
 
             self.send_response(200)
             self.send_header("Content-type", "text/html")
@@ -72,7 +81,6 @@ class GatewayHttpRequestHandler(BaseHTTPRequestHandler):
         except Exception as e:
             logger.error(f"Processing failed: {e}")
             self.send_response(500)
-
 
 
 def read_yaml(file_yaml) -> dict:
@@ -136,6 +144,34 @@ def find_class(package_name: str, base_class: Type[T], class_name: str, recursiv
     return None
 
 
+def build_config(config_file: str = "config.yaml"):
+    global config, path2handlerConf, path2handlerClass, name2forwarderClass
+    try:
+        # load config
+        yaml_config = read_yaml(config_file)
+        config = Config(**yaml_config)
+
+        # pre-compute fast-access maps
+        path2handlerConf = {
+            handler_conf.path: handler_conf
+            for handler_conf in config.handlers.values()
+        }
+        path2handlerClass = {
+            handler_conf.path: find_class('handlers', Handler, handler_conf.class_name)
+            for handler_name, handler_conf in config.handlers.items()
+        }
+        name2forwarderClass = {
+            fw_name: find_class('forwarders', Forwarder, fw_conf.class_name)
+            for fw_name, fw_conf in config.forwarders.items()
+        }
+    except ValidationError as err:
+        logger.error(f"Error when parsing config: {err}")
+        sys.exit(1)
+    except Exception as e:
+        logger.error(f"Error when parsing config: {e}")
+        sys.exit(1)
+
+
 def run(server_class=HTTPServer, handler_class=GatewayHttpRequestHandler, host=default_host, port=default_port):
     server_address = (host, port)
     # Create an HTTP server object and bind it to the specified port and host
@@ -145,18 +181,8 @@ def run(server_class=HTTPServer, handler_class=GatewayHttpRequestHandler, host=d
 
 
 if __name__ == '__main__':
-    global config, path2handlerClass, name2forwarderClass
-    file = 'config.yaml'
-    config = read_yaml(file)
-    gateway = config.get('gateway', {})
-    handlers = config.get('handlers', {})
-    forwarders = config.get('forwarders', {})
-    path2handlerClass = {handler_conf['path']: find_class('handlers', Handler, handler_conf['class']) for
-                         handler_name, handler_conf in handlers.items()}
-    name2forwarderClass = {fw_name: find_class('forwarders', Forwarder, fw_conf['class']) for fw_name, fw_conf in
-                           forwarders.items()}
+    # load config and pre-compute related resources
+    build_config()
 
     # start gateway server
-    run(HTTPServer, GatewayHttpRequestHandler,
-        gateway.get('host', default_host),
-        gateway.get('port', default_port))
+    run(HTTPServer, GatewayHttpRequestHandler, config.gateway.host, config.gateway.port)
