@@ -46,7 +46,7 @@ Create the python virtual environment using:
 
 
 
-## Configure
+## Configuration
 
 Edit the `config.yaml` file as in the example below:
 
@@ -55,7 +55,7 @@ Edit the `config.yaml` file as in the example below:
 gateway:
 
   ## The IP to listen to (defaults to 0.0.0.0 to listen on all interfaces).
-  host: "0.0.0.0"
+  #host: "0.0.0.0"
   ## The port to listen to.
   port: "8080"
 
@@ -69,6 +69,7 @@ handlers:
   brewCreator:
     ## The path to receive requests from BrewCreator
     path: /brewCreator
+    #class_name: BrewCreatorHandler
 
 ## The gateway forwarders configuration to send metrics to external fermentation tracking systems among:
 ## - grainfather
@@ -78,14 +79,17 @@ forwarders:
 
   ## The Grainfather server to forward data.
   grainfather:
-    serverUrl: https://community.grainfather.com/iot/<ID>/custom 
+    serverUrl: https://community.grainfather.com/iot/<ID>/custom
+    #class_name: GrainfatherForwarder
 
   ## The Littlebock server to forward data.
   littlebock:
     serverUrl: http://www.littlebock.fr/api/log/ispindle/<ID1>/<ID2> 
+    #class_name: LittlebockForwarder
 ```
 
 > You can pretty easily add handlers/forwarders or comment-out the one you don't need
+
 
 
 ## Run as a service
@@ -108,6 +112,7 @@ systemctl start brewery-metrics-gateway
 ```
 
 > The service should now be started and will restart the process in case of failure or system reboot.
+
 
 
 ## Run as a standalone process
@@ -134,6 +139,15 @@ Go to Devices, select your device, and go to "Device" tab, then open "Integratio
 
 Save, and wait for next quarter (sometimes more) to start receiving data.
 You should see the requests activity popping in the `app.log` file
+
+
+
+## Issue Tracker
+
+Feel free to vote for existing Bugs or Feature requests in the Github [issues](https://github.com/donatelloOo/brewery-metrics-gateway/issues), or enter new ones:
+
+- [Bug tickets](https://github.com/donatelloOo/brewery-metrics-gateway/issues/new?template=bug_report.md)
+- [Feature requests](https://github.com/donatelloOo/brewery-metrics-gateway/issues/new?template=feature_request.md)
 
 
 
