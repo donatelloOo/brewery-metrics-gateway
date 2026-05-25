@@ -1,5 +1,7 @@
 from typing import Dict, Type
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, field_validator, Field, model_validator
+
+from model.utils import find_class
 
 
 class Config(BaseModel):
@@ -14,56 +16,60 @@ class Config(BaseModel):
     class HandlerConfig(BaseModel):
         path: str
         class_name: str
-        # class_type: Type[Handler] = None
+        class_type: Type = None
 
-        # @field_validator("class_type", mode="before")
-        # def resolve_class_type(cls, v: Type, values: dict[str, Any]) -> Type[Handler]:
-        #    if not v:
-        #        return gateway.find_class('handlers', Handler, values['class_name'])
-        #    return v
+        @model_validator(mode="after")
+        def resolve_class_type(self):
+            from model.handler import Handler
+            if self.class_type is None:
+                self.class_type = find_class('handlers', Handler, self.class_name)
+            return self
 
     class ForwarderConfig(BaseModel):
         server_url: str
         class_name: str
-        _class_type: Type
+        class_type: Type = None
+
+        @model_validator(mode="after")
+        def resolve_class_type(self):
+            from model.forwarder import Forwarder
+            if self.class_type is None:
+                self.class_type = find_class('forwarders', Forwarder, self.class_name)
+            return self
 
     # ---------------------------
     # Root
     # ---------------------------
 
     gateway: GatewayConfig
-    handlers: Dict[str, HandlerConfig] = {}
-    forwarders: Dict[str, ForwarderConfig] = {}
+    handlers: Dict[str, HandlerConfig] = Field(default_factory=Dict[str, HandlerConfig])
+    forwarders: Dict[str, ForwarderConfig] = Field(default_factory=Dict[str, ForwarderConfig])
 
     @field_validator("handlers", mode="before")
-    def set_handler_defaults(cls, handlers: Dict[str, HandlerConfig]) -> dict:
-        if not handlers:
-            return {}
-
+    def set_handler_defaults(cls, field_value: Dict[str, HandlerConfig]) -> Dict[str, HandlerConfig]:
+        if not field_value:
+            return {}  # never null
         # provide default class_name if known and not set
-        _default_handler_classes = {
+        _default_classes = {
             "brewCreator": "BrewCreatorHandler"
         }
-        for key, config in handlers.items():
-            default_class = _default_handler_classes.get(key, None)
-            if default_class and config and not config.get('class_name', None):
+        for key, config in field_value.items():
+            default_class = _default_classes.get(key, None)
+            if default_class and config and not config.get('class_name'):
                 config['class_name'] = default_class
-
-        return handlers
+        return field_value
 
     @field_validator("forwarders", mode="before")
-    def set_forwarder_defaults(cls, forwarders: Dict[str, ForwarderConfig]) -> dict:
-        if not forwarders:
-            return {}
-
+    def set_forwarder_defaults(cls, field_value: Dict[str, ForwarderConfig]) -> Dict[str, ForwarderConfig]:
+        if not field_value:
+            return {}  # never null
         # provide default class_name if known and not set
-        _default_forwarder_classes = {
+        _default_classes = {
             "grainfather": "GrainfatherForwarder",
             "littlebock": "LittlebockForwarder"
         }
-        for key, config in forwarders.items():
-            default_class = _default_forwarder_classes.get(key, None)
-            if default_class and config and not config.get('class_name', None):
+        for key, config in field_value.items():
+            default_class = _default_classes.get(key, None)
+            if default_class and config and not config.get('class_name'):
                 config['class_name'] = default_class
-
-        return forwarders
+        return field_value
