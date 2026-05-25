@@ -1,3 +1,5 @@
-﻿PyYAML>=6.0.3
+﻿cython<3.0.0; python_version >= '3.9' and python_version < '3.11'
+PyYAML==5.4.1; python_version >= '3.9' and python_version < '3.11'
+PyYAML==6.0.3; python_version == '3.8' or python_version >= '3.11'
 requests>=2.32.4
 pydantic>=2.10.6
