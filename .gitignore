@@ -1,6 +1,8 @@
 
-# Environments
+# Python
 .venv
+.pytest_cache/
+__pycache__/
 
 # IntelliJ Idea / PyCharm
 .idea/

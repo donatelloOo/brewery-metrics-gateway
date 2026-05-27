@@ -1,0 +1,35 @@
+## The gateway server configuration
+gateway:
+
+  ## The IP to listen to (defaults to 0.0.0.0 to listen on all interfaces).
+  #host: "0.0.0.0"
+  ## The port to listen to.
+  port: 8888
+
+## The gateway handlers configuration to receive data from the gateway.
+## Just comment out the handlers to disable
+handlers:
+
+  ## The BrewCreator handler to receive metrics from following connected devices:
+  ## - Graviator
+  ## - Ferminator (or Fermcubator)
+  brewCreator:
+    ## The path to receive requests from BrewCreator
+    path: /brewCreator
+    #class_name: BrewCreatorHandler
+
+## The gateway forwarders configuration to send metrics to external fermentation tracking systems among:
+## - grainfather
+## - littlebock
+## - brewfather (to come)
+forwarders:
+
+  ## The Grainfather server to forward data.
+  grainfather:
+    server_url: https://community.grainfather.com/iot/RAND/custom
+    #class_name: GrainfatherForwarder
+
+  ## The Littlebock server to forward data.
+  littlebock:
+    server_url: http://www.littlebock.fr/api/log/ispindle/RAND/RAND
+    #class_name: LittlebockForwarder
