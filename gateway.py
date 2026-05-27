@@ -77,7 +77,7 @@ def run(server_class=HTTPServer,
     httpd.serve_forever()
 
 
-def build_config(config_file: str, args: Namespace):
+def build_config(config_file: str, args: Namespace) -> Config:
     global config, path2handlerConf
     try:
         # load config
@@ -93,6 +93,7 @@ def build_config(config_file: str, args: Namespace):
             handler_conf.path: handler_conf
             for handler_conf in config.handlers.values()
         }
+        return config
     except ValidationError as err:
         logger.error(f"Error when parsing config: {err}")
         sys.exit(1)
@@ -118,10 +119,10 @@ def main():
     logger = logging.getLogger("gateway")
 
     # load config and pre-compute related resources
-    build_config(config_file=args.config, args=args)
+    local_config = build_config(config_file=args.config, args=args)
 
     # start gateway server
-    run(HTTPServer, GatewayHttpRequestHandler, config.gateway.host, config.gateway.port)
+    run(HTTPServer, GatewayHttpRequestHandler, local_config.gateway.host, local_config.gateway.port)
 
 
 if __name__ == '__main__':
