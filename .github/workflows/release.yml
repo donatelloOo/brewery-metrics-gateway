@@ -18,8 +18,12 @@ jobs:
 
       - name: Create archives
         run: |
-          zip -r release-${{ env.RELEASE_VERSION }}.zip . -x ".git/*" ".gitignore" ".github/*" "./tests/*" ".venv/*" "*/__pycache__/*" .
-          tar czvf release-${{ env.RELEASE_VERSION }}.tar.gz --exclude=".git" --exclude=".github" --exclude="./tests" --exclude=".venv" --exclude="*/__pycache__" .
+          zip -r release-${{ env.RELEASE_VERSION }}.zip . \
+            -x ".git/*" ".gitignore" ".github/*" "./tests/*" \
+            ".venv/*" "*/__pycache__/*" "*.zip" "*.tar.gz"
+          tar czvf release-${{ env.RELEASE_VERSION }}.tar.gz \
+            --exclude=".git" --exclude=".gitignore" --exclude=".github" --exclude="./tests" \
+            --exclude=".venv" --exclude="*/__pycache__" --exclude="*.zip" --exclude="*.tar.gz" .
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
