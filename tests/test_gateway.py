@@ -1,4 +1,3 @@
-import os
 import socket
 import subprocess
 import time
@@ -7,7 +6,7 @@ import time
 def test_gateway_startup():
     # start gateway in background using shell script
     port = 8888
-    process = run_server(f'./gateway.py -c config_test.yaml')
+    process = run_server(f'./gateway.py -c tests/config_test.yaml')
 
     try:
         # wait for port to be open
