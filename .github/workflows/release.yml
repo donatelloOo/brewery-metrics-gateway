@@ -18,15 +18,17 @@ jobs:
 
       - name: Create ZIP archive
         run: |
-          zip -r release-${{ env.RELEASE_VERSION }}.zip . \
+          mkdir -p dist
+          zip -r dist/release-${{ env.RELEASE_VERSION }}.zip . \
             -x ".git/*" ".gitignore" ".github/*" "tests/*" \
-            ".venv/*" "*/__pycache__/*" "*.zip" "*.tgz"
+            ".venv/*" "*/__pycache__/*" "dist/*"
 
       - name: Create TGZ archives
         run: |
-          tar -czvf release-${{ env.RELEASE_VERSION }}.tgz \
+          mkdir -p dist
+          tar -czvf dist/release-${{ env.RELEASE_VERSION }}.tgz \
             --exclude=".git" --exclude=".gitignore" --exclude=".github" --exclude="tests" \
-            --exclude=".venv" --exclude="*/__pycache__" --exclude="*.zip" --exclude="*.tgz" .
+            --exclude=".venv" --exclude="*/__pycache__" --exclude="dist" .
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
