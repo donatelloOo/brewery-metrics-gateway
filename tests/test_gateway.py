@@ -9,7 +9,7 @@ def test_gateway_startup():
     port = 8888
     script_path = os.path.abspath("../start.sh")
     # script_path = os.path.abspath("../gateway.py")
-    process = run_server(f'../start.sh -c config_test.yaml')
+    process = run_server(f'./start.sh -c config_test.yaml')
 
     try:
         # wait for port to be open
