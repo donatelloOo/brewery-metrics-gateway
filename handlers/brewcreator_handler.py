@@ -15,7 +15,7 @@ class BrewCreatorHandler(Handler):
     def transform(config: Config.HandlerConfig, data: dict) -> MetricData:
         """
         Receives BrewCreator POST requests.
-        
+
         Expected format is:
         {
             'name': '<deviceName>',

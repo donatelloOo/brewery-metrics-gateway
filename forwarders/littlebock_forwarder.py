@@ -34,7 +34,7 @@ class LittlebockForwarder(Forwarder):
 
         if response.status_code == 200:
             if response.json().get('success'):
-                logger.info(f"Update Success")
+                logger.info("Update Success")
                 return True
             else:
                 logger.warning(response.json().get('message'))

@@ -4,7 +4,7 @@ from model.config import Config
 from model.metric import MetricData
 
 
-## Abstract definition of a forwarder
+# Abstract definition of a forwarder
 class Forwarder(ABC):
 
     @staticmethod

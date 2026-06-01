@@ -33,7 +33,7 @@ class GrainfatherForwarder(Forwarder):
         response = requests.post(config.server_url, data, timeout=10)
 
         if response.status_code in (200, 201):
-            logger.info(f"Update Success")
+            logger.info("Update Success")
             return True
         elif response.status_code == 422:
             logger.error(f"Invalid request: {response.text}")

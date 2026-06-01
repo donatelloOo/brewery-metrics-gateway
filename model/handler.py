@@ -4,7 +4,7 @@ from model.config import Config
 from model.metric import MetricData
 
 
-## Abstract definition of a handler
+# Abstract definition of a handler
 class Handler(ABC):
 
     @staticmethod
