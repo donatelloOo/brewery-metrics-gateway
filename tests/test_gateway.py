@@ -10,7 +10,7 @@ def test_gateway_startup():
     # start gateway in background using shell script
     script_path = os.path.abspath("start.sh")
     subprocess.Popen(
-        [script_path, "-c", "tests/config_test.yaml"],
+        ["bash", script_path, "-c", "tests/config_test.yaml"],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
     )
