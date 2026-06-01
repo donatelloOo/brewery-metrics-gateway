@@ -105,6 +105,7 @@ def build_config(config_file: str, args: Namespace) -> Config:
 def main():
     global logger
     args = parse_args()
+    print(f"args: {args}")
 
     # Logging configuration
     logging.basicConfig(
@@ -122,6 +123,7 @@ def main():
     local_config = build_config(config_file=args.config, args=args)
 
     # start gateway server
+    print(f"start on {local_config.gateway.host}:{local_config.gateway.port}")
     run(HTTPServer, GatewayHttpRequestHandler, local_config.gateway.host, local_config.gateway.port)
 
 

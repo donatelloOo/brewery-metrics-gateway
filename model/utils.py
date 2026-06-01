@@ -96,10 +96,10 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Brewery Metrics Gateway.")
     parser.add_argument("-c", "--config", type=str, default="config.yaml",
                         help="The YAML configuration file to use.")
-    parser.add_argument("-i", "--ip", type=ip_or_hostname_type, default="0.0.0.0",
-                        help="The default IP address or hostname to listen to (if not defined in config).")
-    parser.add_argument("-p", "--port", type=int, default=8080,
-                        help="The default port to listen to (if not defined in config).")
+    parser.add_argument("-i", "--ip", type=ip_or_hostname_type,
+                        help="The default IP address or hostname to listen to (overrides config).")
+    parser.add_argument("-p", "--port", type=int,
+                        help="The default port to listen to (overrides config).")
     parser.add_argument("-f", "--logFile", type=str, default="app.log",
                         help="The log file to write.")
     parser.add_argument("-l", "--logLevel", type=str, default="INFO",
