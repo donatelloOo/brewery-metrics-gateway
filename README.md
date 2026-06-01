@@ -38,8 +38,8 @@ Currently, it supports the following:
 
 ## Prerequisites
 
-This tool is tested with following versions of Python to ensure maximum backward compatibility with automated tests.
-- Python 3.8, 3.9, 3.10, 3.11, 3.12, 3.13, 3.14
+This tool is automatically tested with following versions of Python to ensure the widest possible compatibility:
+- Python `3.8`, `3.9`, `3.10`, `3.11`, `3.12`, `3.13`, `3.14`
 
 Create the python virtual environment using:
 
