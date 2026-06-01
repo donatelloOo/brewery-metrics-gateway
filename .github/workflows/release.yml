@@ -16,14 +16,17 @@ jobs:
         run: |
           echo "RELEASE_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
-      - name: Create archives
+      - name: Create ZIP archive
         run: |
           zip -r release-${{ env.RELEASE_VERSION }}.zip . \
             -x ".git/*" ".gitignore" ".github/*" "tests/*" \
-            ".venv/*" "*/__pycache__/*" "*.zip" "*.tar.gz"
-          tar czvf release-${{ env.RELEASE_VERSION }}.tar.gz \
+            ".venv/*" "*/__pycache__/*" "*.zip" "*.tgz"
+
+      - name: Create TGZ archives
+        run: |
+          tar -czvf release-${{ env.RELEASE_VERSION }}.tgz \
             --exclude=".git" --exclude=".gitignore" --exclude=".github" --exclude="tests" \
-            --exclude=".venv" --exclude="*/__pycache__" --exclude="*.zip" --exclude="*.tar.gz" --exclude="*.tar" .
+            --exclude=".venv" --exclude="*/__pycache__" --exclude="*.zip" --exclude="*.tgz" .
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
