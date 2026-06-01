@@ -7,9 +7,7 @@ import time
 def test_gateway_startup():
     # start gateway in background using shell script
     port = 8888
-    script_path = os.path.abspath("../start.sh")
-    # script_path = os.path.abspath("../gateway.py")
-    process = run_server(f'./start.sh -c config_test.yaml')
+    process = run_server(f'./gateway.py -c config_test.yaml')
 
     try:
         # wait for port to be open
