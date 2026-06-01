@@ -11,7 +11,7 @@ class Config(BaseModel):
 
     class GatewayConfig(BaseModel):
         host: str = "0.0.0.0"
-        port: int
+        port: int = 8080
 
     class HandlerConfig(BaseModel):
         path: str
