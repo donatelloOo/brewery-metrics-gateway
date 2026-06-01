@@ -23,7 +23,7 @@ jobs:
             -x ".git/*" ".gitignore" ".github/*" "tests/*" \
             ".venv/*" "*/__pycache__/*" "dist/*"
 
-      - name: Create TGZ archives
+      - name: Create TGZ archive
         run: |
           mkdir -p dist
           tar -czvf dist/release-${{ env.RELEASE_VERSION }}.tgz \
@@ -35,7 +35,7 @@ jobs:
         with:
           files: |
             dist/release-${{ env.RELEASE_VERSION }}.zip
-            dist/release-${{ env.RELEASE_VERSION }}.tar.gz
+            dist/release-${{ env.RELEASE_VERSION }}.tgz
           tag_name: ${{ env.RELEASE_VERSION }}
           name: Release ${{ env.RELEASE_VERSION }}
           generate_release_notes: true
